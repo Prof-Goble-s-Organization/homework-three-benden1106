@@ -157,9 +157,11 @@ public class CS232IterableDoublyLinkedList<E> implements CS232List<E>,
 	private class DLLIterator implements CS232Iterator<E> {
 
 		private DLLNode cursor;
+		private boolean canRemove;
 
 		public DLLIterator() {
 			cursor = head;
+			canRemove = true;
 		}
 
 		public boolean hasNext() {
@@ -171,18 +173,28 @@ public class CS232IterableDoublyLinkedList<E> implements CS232List<E>,
 				throw new NoSuchElementException("There is no next element.");
 			} else {
 				cursor = cursor.next;
+				this.canRemove = true;
 				return cursor.element;
 			}
 		}
 
 		public boolean hasPrevious() {
 			// Intentionally not implemented, see HW assignment!
-			throw new UnsupportedOperationException("Not implemented");
+			return cursor.prev != head;
 		}
 
 		public E previous() {
 			// Intentionally not implemented, see HW assignment!
-			throw new UnsupportedOperationException("Not implemented");
+			if(!hasPrevious())
+			{
+				throw new NoSuchElementException("There is no previous element.");
+			}
+			else
+			{
+				cursor = cursor.prev;
+				this.canRemove = true;
+				return cursor.element;
+			}
 		}
 
 		public void insert(E element) {
@@ -195,7 +207,36 @@ public class CS232IterableDoublyLinkedList<E> implements CS232List<E>,
 
 		public E remove() {
 			// Intentionally not implemented, see HW assignment!
-			throw new UnsupportedOperationException("Not implemented");
+			E removeVal = cursor.element;
+			if(canRemove)
+			{
+				if(cursor == head && cursor == tail)
+				{
+					head = null;
+					tail = null;
+				}
+				else if(cursor == head)
+				{
+					head = cursor.next;
+					head.prev = null;
+				}
+				else if (cursor == tail)
+				{
+					tail = cursor.prev;
+					tail.next = null;
+				}
+				else
+				{
+					cursor.prev.next = cursor.next;
+					cursor.next.prev = cursor.prev;
+				}
+				canRemove = false;
+				return removeVal;	
+			}
+			else
+			{
+				throw new NoSuchElementException("Can't rempve at cursor.");
+			}
 		}
 	}
 	

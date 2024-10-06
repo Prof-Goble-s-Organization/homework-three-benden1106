@@ -1,5 +1,7 @@
 package hw03;
 
+import java.util.NoSuchElementException;
+
 /**
  * An implementation of the CS132List interface backed with an array of Objects.
  * 
@@ -7,7 +9,7 @@ package hw03;
  * @author Dickinson College
  * @version Feb 18, 2016
  */
-public class CS232ArrayList<E> implements CS232List<E> {
+public class CS232ArrayList<E> implements CS232List<E>, CS232Iterable<E> {
 
     private static final int INITIAL_CAPACITY = 10;
 
@@ -142,6 +144,77 @@ public class CS232ArrayList<E> implements CS232List<E> {
             currentSize--;
 
             return elem;
+        }
+    }
+
+    public CS232Iterator<E> getIterator()
+    {
+        return new AListIterator();
+    }
+
+    private class AListIterator implements CS232Iterator<E>
+    {
+        private int cursor;
+
+        public AListIterator()
+        {
+            cursor = 0;
+        }
+
+        public boolean hasNext()
+        {
+            if(cursor == currentSize - 1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        public boolean hasPrevious()
+        {
+            if(cursor ==  0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        public E next()
+        {
+            if(cursor == currentSize - 1)
+            {
+                throw new NoSuchElementException("There is no next value.");
+            }
+            else
+            {
+                cursor++;
+                return listElements[cursor];
+            }
+        }
+        public E previous()
+        {
+            if(cursor == 0)
+            {
+                throw new NoSuchElementException("There is no previous value.");
+            }
+            else
+            {
+                cursor--;
+                return listElements[cursor];
+            }
+        }
+        public void insert(E element)
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        public E remove()
+        {
+            throw new UnsupportedOperationException();
         }
     }
 }
